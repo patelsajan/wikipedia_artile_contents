@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<body>
+	</body>
+	<script>
+		async function test() {
+
+		const url = "https://en.wikipedia.org/w/api.php?" +
+    new URLSearchParams({
+        origin: "*",
+        action: "parse",
+        page: "List_of_country_calling_codes",
+        format: "json",
+    });
+
+try {
+    const req = await fetch(url);
+    const json = await req.json();
+    // console.log(json.parse.text["*"]);
+			console.log(json);
+		// document.querySelector('body').innerHTML = json.parse.text['*'];
+			const parser = new DOMParser();
+			let parsedHtml = await parser.parseFromString(json.parse.text['*'], 'text/html');
+			
+			let test = [];
+			let allUl = parsedHtml.querySelectorAll('ul');
+			allUl.forEach(element =>{
+					test.push(element.children);	
+					});
+
+			console.log(test);
+			let a = [];
+			test.forEach(e=>{
+					for(i in e) {
+								a.push(e[i].innerText);
+							}
+					});
+			let reg = new RegExp(/^\+.*\d+.*\w+/gi);
+			let b = a.filter(el=>reg.test(el));
+			console.log(a);
+			console.log(b);
+			console.log(parsedHtml.children[0].innerText);
+			document.querySelector('body').innerHTML = parsedHtml.children[0].innerHTML;
+} catch (e) {
+    console.error(e);
+}
+		}
+		test()
+	</script>
+</html>
+
